@@ -17,6 +17,7 @@
     <PackageReference Include="xunit.runner.console" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\ApplicationCore\ApplicationCore.csproj" />
     <ProjectReference Include="..\..\src\BlazorAdmin\BlazorAdmin.csproj" />
     <ProjectReference Include="..\..\src\BlazorShared\BlazorShared.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />

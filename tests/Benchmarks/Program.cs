@@ -3,4 +3,4 @@ using BenchmarkDotNet.Running;
 using Benchmarks;
 
 
-var summary = BenchmarkRunner.Run<Md5VsSha256>();
+var summary = BenchmarkRunner.Run<DataBenchmarks>();
