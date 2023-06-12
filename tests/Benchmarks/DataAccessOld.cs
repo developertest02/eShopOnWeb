@@ -14,27 +14,30 @@ using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace Benchmarks;
-public class DataAccessOld : IClassFixture<WebApplicationFactory<BlazorAdmin.Program>>
-{
-    private readonly WebApplicationFactory<BlazorAdmin.Program> _factory;
-
-    public DataAccessOld(WebApplicationFactory<BlazorAdmin.Program> factory)
+public class DataAccessOld
+{ 
+    private readonly WebApplicationFactory<Microsoft.eShopWeb.Web.Program> _factory;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly CatalogItemService _catalogItemService;
+    public DataAccessOld()
     {
-        _factory = factory;
+        _factory = new WebApplicationFactory<Microsoft.eShopWeb.Web.Program>();
+        var scope  = _factory.Server.Services.GetService<IServiceScopeFactory>()
+            .CreateScope();
+        _serviceProvider = scope.ServiceProvider;
+        _catalogItemService = _serviceProvider.GetRequiredService<CatalogItemService>();
     }
 
     
     [Fact]
-    public void DoStuff()
+    public async Task GetItems()
     {
-        //var s = _factory.Services;
-        var sut = _factory.Services.GetServices<CatalogItemService>();
-        //var items = sut.ToList();
-        //items.Count.Should().BeGreaterThan(0);
+        var result = await _catalogItemService.List();
+        result.Count.Should().BeGreaterThan(0);
 
     }
-    
 
-    
+
+
 
 }
