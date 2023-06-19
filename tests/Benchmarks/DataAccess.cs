@@ -21,13 +21,14 @@ using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace Benchmarks;
-public class DataAccessOld
+public class DataAccess
 { 
     private readonly WebApplicationFactory<Microsoft.eShopWeb.Web.Program> _factory;
     private readonly IServiceProvider _serviceProvider;
     private readonly IMapper _mapper;
     private readonly IRepository<Microsoft.eShopWeb.ApplicationCore.Entities.CatalogItem> _catalogItemRepository;
-    public DataAccessOld()
+    private readonly CatalogContext _catalogContext;
+    public DataAccess()
     {
         _factory = new WebApplicationFactory<Microsoft.eShopWeb.Web.Program>();
         var scope  = _factory.Server.Services.GetService<IServiceScopeFactory>()
@@ -38,17 +39,18 @@ public class DataAccessOld
         });
         _mapper = config.CreateMapper();
         _catalogItemRepository = _serviceProvider.GetRequiredService<IRepository<Microsoft.eShopWeb.ApplicationCore.Entities.CatalogItem>>();
+        _catalogContext = _serviceProvider.GetRequiredService<CatalogContext>();
     }
 
     
     [Fact]
     public void GetItems()
     {
-       var actual =  DoBenchmark();
+       var actual =  DoOldBenchmark();
         actual.CatalogItems.Count.Should().BeGreaterThan(0);       
     }
 
-    public ListPagedCatalogItemResponse DoBenchmark()
+    public ListPagedCatalogItemResponse DoOldBenchmark()
     {
         var catologSettings = new CatalogSettings();
         catologSettings.CatalogBaseUrl = "https://localhost:5001/";
@@ -59,6 +61,10 @@ public class DataAccessOld
         return result.Value;
     }
     
+    //public List<BlazorShared.Models.CatalogItem> DoNewBenchmark()
+    //{
+
+    //}
 
 
 

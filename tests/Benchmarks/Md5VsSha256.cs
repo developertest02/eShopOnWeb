@@ -30,11 +30,5 @@ namespace Benchmarks
         public byte[] Md5() => md5.ComputeHash(data);
     }
 
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var summary = BenchmarkRunner.Run<Md5VsSha256>();
-        }
-    }
+  
 }

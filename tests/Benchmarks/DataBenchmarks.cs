@@ -9,7 +9,7 @@ using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
 namespace Benchmarks;
 public class DataBenchmarks
 {
-    private readonly DataAccessOld _dataAccessOld = new DataAccessOld();
+    private readonly DataAccess _dataAccessOld = new DataAccess();
     [Benchmark]
-    public ListPagedCatalogItemResponse GetCatalogItems() => _dataAccessOld.DoBenchmark();
+    public ListPagedCatalogItemResponse GetCatalogItems() => _dataAccessOld.DoOldBenchmark();
 }
