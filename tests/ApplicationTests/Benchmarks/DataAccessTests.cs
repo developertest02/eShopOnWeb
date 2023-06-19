@@ -20,7 +20,7 @@ public class DataAccessTests : PerformanceTestBase
     [Fact]
     public void DoStuff()
     {
-        System.Diagnostics.Debugger.Launch();
+   
         var logger = new AccumulationLogger();
 
         var config = ManualConfig.Create(DefaultConfig.Instance)

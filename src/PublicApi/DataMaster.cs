@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Ardalis.Specification.EntityFrameworkCore;
 using BlazorShared.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.Infrastructure.Data;
 
 namespace Microsoft.eShopWeb.PublicApi;
@@ -13,16 +16,14 @@ public class DataMaster
         _catalogConetext = catalogConetext;
     }
 
-    public List<CatalogItem> GetCatalogItems()
+    public async Task<List<CatalogItem>> GetCatalogItems()
     {
-        var items = _catalogConetext.CatalogItems.ToList();
+        var items = await  _catalogConetext.CatalogItems.ToListAsync();
         var result = new List<CatalogItem>();
         items.ForEach(source => {
 
             var model = new CatalogItem();
             model.PictureUri = source.PictureUri;
-            
-        
         
         });
         return result;

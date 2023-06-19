@@ -23,14 +23,15 @@ using Xunit;
 namespace Benchmarks;
 public class DataAccess
 { 
-    private readonly WebApplicationFactory<Microsoft.eShopWeb.Web.Program> _factory;
+    private readonly WebApplicationFactory<Program> _factory;
     private readonly IServiceProvider _serviceProvider;
     private readonly IMapper _mapper;
     private readonly IRepository<Microsoft.eShopWeb.ApplicationCore.Entities.CatalogItem> _catalogItemRepository;
+    private readonly DataMaster _dataMaster;
     private readonly CatalogContext _catalogContext;
     public DataAccess()
     {
-        _factory = new WebApplicationFactory<Microsoft.eShopWeb.Web.Program>();
+        _factory = new WebApplicationFactory<Program>();
         var scope  = _factory.Server.Services.GetService<IServiceScopeFactory>()
             .CreateScope();
         _serviceProvider = scope.ServiceProvider;
@@ -40,6 +41,7 @@ public class DataAccess
         _mapper = config.CreateMapper();
         _catalogItemRepository = _serviceProvider.GetRequiredService<IRepository<Microsoft.eShopWeb.ApplicationCore.Entities.CatalogItem>>();
         _catalogContext = _serviceProvider.GetRequiredService<CatalogContext>();
+        _dataMaster = _serviceProvider.GetRequiredService<DataMaster>();
     }
 
     
@@ -55,7 +57,7 @@ public class DataAccess
         var catologSettings = new CatalogSettings();
         catologSettings.CatalogBaseUrl = "https://localhost:5001/";
         var uriComposer = new UriComposer(catologSettings);
-        var sut = new CatalogItemListPagedEndpoint(uriComposer, _mapper);
+        var sut = new CatalogItemListPagedEndpoint(uriComposer, _mapper, _dataMaster);
         var request = new ListPagedCatalogItemRequest(null, null, null, null);
         var result = sut.HandleAsync(request, _catalogItemRepository).Result as Microsoft.AspNetCore.Http.HttpResults.Ok<ListPagedCatalogItemResponse>;
         return result.Value;
