@@ -15,6 +15,7 @@ public class CatalogItem : BaseEntity, IAggregateRoot
     public int CatalogBrandId { get; private set; }
     public CatalogBrand? CatalogBrand { get; private set; }
 
+    public CatalogItem() { }
     public CatalogItem(int catalogTypeId,
         int catalogBrandId,
         string description,

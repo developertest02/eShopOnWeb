@@ -26,7 +26,7 @@ public class CatalogItemListPagedEndpoint : IEndpoint<IResult, ListPagedCatalogI
         _mapper = mapper;
         _dataMaster = dataMaster;
     }
-    
+
 
     public void AddRoute(IEndpointRouteBuilder app)
     {
@@ -74,23 +74,12 @@ public class CatalogItemListPagedEndpoint : IEndpoint<IResult, ListPagedCatalogI
     //}
     public async Task<IResult> HandleAsync(ListPagedCatalogItemRequest request, IRepository<CatalogItem> itemRepository)
     {
-    
         var response = new ListPagedCatalogItemResponse(request.CorrelationId());
+        var items = _dataMaster.GetCatalogItems(request.PageIndex, request.PageSize, request.CatalogTypeId, request.CatalogBrandId);
 
-        
-        var filterSpec = new CatalogFilterSpecification(request.CatalogBrandId, request.CatalogTypeId);
-       // int totalItems = await itemRepository.CountAsync(filterSpec);
-
-        var pagedSpec = new CatalogFilterPaginatedSpecification(
-            skip: request.PageIndex * request.PageSize,
-            take: request.PageSize,
-            brandId: request.CatalogBrandId,
-            typeId: request.CatalogTypeId);
-
-        var items = await _dataMaster.GetCatalogItems();
-        //var items = await itemRepository.ListAsync(pagedSpec);
         int totalItems = items.Count;
-        response.CatalogItems.AddRange(items.Select(_mapper.Map<CatalogItemDto>));
+
+        response.CatalogItems.AddRange(items);
         foreach (CatalogItemDto item in response.CatalogItems)
         {
             item.PictureUri = _uriComposer.ComposePicUri(item.PictureUri);
@@ -104,6 +93,8 @@ public class CatalogItemListPagedEndpoint : IEndpoint<IResult, ListPagedCatalogI
         {
             response.PageCount = totalItems > 0 ? 1 : 0;
         }
+
+
 
         return Results.Ok(response);
     }
