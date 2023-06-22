@@ -14,10 +14,11 @@ namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
 public class CatalogItemGetByIdEndpoint : IEndpoint<IResult, GetByIdCatalogItemRequest, IRepository<CatalogItem>>
 {
     private readonly IUriComposer _uriComposer;
-
-    public CatalogItemGetByIdEndpoint(IUriComposer uriComposer)
+    private readonly DataMaster _dataMaster;
+    public CatalogItemGetByIdEndpoint(IUriComposer uriComposer, DataMaster dataMaster)
     {
         _uriComposer = uriComposer;
+        _dataMaster = dataMaster;
     }
 
     public void AddRoute(IEndpointRouteBuilder app)
@@ -34,21 +35,21 @@ public class CatalogItemGetByIdEndpoint : IEndpoint<IResult, GetByIdCatalogItemR
     public async Task<IResult> HandleAsync(GetByIdCatalogItemRequest request, IRepository<CatalogItem> itemRepository)
     {
         var response = new GetByIdCatalogItemResponse(request.CorrelationId());
-
-        var item = await itemRepository.GetByIdAsync(request.CatalogItemId);
+        var item = await _dataMaster.GetCatalogItemById(request.CatalogItemId);
+        //var item = await itemRepository.GetByIdAsync(request.CatalogItemId);
         if (item is null)
             return Results.NotFound();
 
-        response.CatalogItem = new CatalogItemDto
-        {
-            Id = item.Id,
-            CatalogBrandId = item.CatalogBrandId,
-            CatalogTypeId = item.CatalogTypeId,
-            Description = item.Description,
-            Name = item.Name,
-            PictureUri = _uriComposer.ComposePicUri(item.PictureUri),
-            Price = item.Price
-        };
+        //response.CatalogItem = new CatalogItemDto
+        //{
+        //    Id = item.Id,
+        //    CatalogBrandId = item.CatalogBrandId,
+        //    CatalogTypeId = item.CatalogTypeId,
+        //    Description = item.Description,
+        //    Name = item.Name,
+        //    PictureUri = _uriComposer.ComposePicUri(item.PictureUri),
+        //    Price = item.Price
+        //};
         return Results.Ok(response);
     }
 }

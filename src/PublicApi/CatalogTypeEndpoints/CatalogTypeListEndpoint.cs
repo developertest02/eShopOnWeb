@@ -15,11 +15,11 @@ namespace Microsoft.eShopWeb.PublicApi.CatalogTypeEndpoints;
 /// </summary>
 public class CatalogTypeListEndpoint : IEndpoint<IResult, IRepository<CatalogType>>
 {
-    private readonly IMapper _mapper;
+    private readonly DataMaster _dataMaster;
 
-    public CatalogTypeListEndpoint(IMapper mapper)
+    public CatalogTypeListEndpoint(DataMaster dataMaster)
     {
-        _mapper = mapper;
+        _dataMaster = dataMaster;
     }
 
     public void AddRoute(IEndpointRouteBuilder app)
@@ -37,10 +37,10 @@ public class CatalogTypeListEndpoint : IEndpoint<IResult, IRepository<CatalogTyp
     {
         var response = new ListCatalogTypesResponse();
 
-        var items = await catalogTypeRepository.ListAsync();
+        var items = _dataMaster.GetCatalogTypes();
 
-        response.CatalogTypes.AddRange(items.Select(_mapper.Map<CatalogTypeDto>));
-
+        response.CatalogTypes.AddRange(items);
+        
         return Results.Ok(response);
     }
 }

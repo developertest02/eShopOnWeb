@@ -10,7 +10,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.Infrastructure.Data;
+using Microsoft.eShopWeb.PublicApi.CatalogBrandEndpoints;
 using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
+using Microsoft.eShopWeb.PublicApi.CatalogTypeEndpoints;
 
 namespace Microsoft.eShopWeb.PublicApi;
 
@@ -26,7 +28,26 @@ public class DataMaster
         return result;
     }
 
+    public async Task<CatalogItemDto> GetCatalogItemById(int id)
+    {
+        var connection = GetConnection();
+        var result = await connection.QuerySingleAsync<CatalogItemDto>("SELECT * FROM CatalogItems WHERE Id = @Id", new { Id = id });
+        return result;
+    }
+    public List<CatalogBrandDto> GetCatalogBrands()
+    {
+        var connection = GetConnection();
+        var result = connection.Query<CatalogBrandDto>("SELECT Id, Brand as Name FROM CatalogBrands");
+        return result.ToList();
+        
+    }
 
+    public List<CatalogTypeDto> GetCatalogTypes()
+    {
+        var connection = GetConnection();
+        var result = connection.Query<CatalogTypeDto>("SELECT Id, Type as Name FROM CatalogTypes").ToList();
+        return result;
+    }
 
     private SqlConnection GetConnection()
     {

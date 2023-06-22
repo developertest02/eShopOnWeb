@@ -15,11 +15,11 @@ namespace Microsoft.eShopWeb.PublicApi.CatalogBrandEndpoints;
 /// </summary>
 public class CatalogBrandListEndpoint : IEndpoint<IResult, IRepository<CatalogBrand>>
 {
-    private readonly IMapper _mapper;
 
-    public CatalogBrandListEndpoint(IMapper mapper)
+    private readonly DataMaster _dataMaster;
+    public CatalogBrandListEndpoint(DataMaster dataMaster)
     {
-        _mapper = mapper;
+        _dataMaster = dataMaster;
     }
 
     public void AddRoute(IEndpointRouteBuilder app)
@@ -37,9 +37,9 @@ public class CatalogBrandListEndpoint : IEndpoint<IResult, IRepository<CatalogBr
     {
         var response = new ListCatalogBrandsResponse();
 
-        var items = await catalogBrandRepository.ListAsync();
+        var items = _dataMaster.GetCatalogBrands();
 
-        response.CatalogBrands.AddRange(items.Select(_mapper.Map<CatalogBrandDto>));
+        response.CatalogBrands.AddRange(items);
 
         return Results.Ok(response);
     }
