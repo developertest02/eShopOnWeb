@@ -18,7 +18,67 @@ namespace Microsoft.eShopWeb.PublicApi;
 
 public class DataMaster
 {
+    public void UpdateCatalogItem(ApplicationCore.Entities.CatalogItem source)
+    {
+        var connection = GetConnection();
+        var dynamicParameters = new DynamicParameters();
+        var parameters = new
+        {
+            Id = source.Id,
+            Name = source.Name,
+            Description = source.Description,
+            Price = source.Price,
+            PictureUri = source.PictureUri,
+            CatalogTypeId = source.CatalogTypeId,
+            CatalogBrandId = source.CatalogBrandId
+        };
+        dynamicParameters.AddDynamicParams(parameters);
 
+        // Execute the stored procedure using Dapper
+        var result = connection.Execute("UpdateCatalogItem",
+            dynamicParameters,
+            null,
+            null,
+            CommandType.StoredProcedure);
+
+        
+    }
+    public ApplicationCore.Entities.CatalogItem AddNewCatalogItem(ApplicationCore.Entities.CatalogItem source)
+    {
+        var connection = GetConnection();
+        // Define a parameter for the inserted Id value
+        var insertedId = new SqlParameter("@InsertedId", SqlDbType.Int)
+        {
+            Direction = ParameterDirection.ReturnValue
+        };
+
+        var dynamicParameters = new DynamicParameters();
+        dynamicParameters.Add("@InsertedId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+        var parameters = new
+        {
+            Name = source.Name,
+            Description = source.Description,
+            Price = source.Price,
+            PictureUri = source.PictureUri,
+            CatalogTypeId = source.CatalogTypeId,
+            CatalogBrandId = source.CatalogBrandId
+        };
+        dynamicParameters.AddDynamicParams(parameters);
+
+        // Execute the stored procedure using Dapper
+        var result = connection.Execute("AddCatalogItem",
+            dynamicParameters,
+            null,
+            null,
+            CommandType.StoredProcedure);
+        var id = dynamicParameters.Get<int>("@InsertedId");
+        source.SetId(id);
+        return source;
+
+
+    }
+    
     public List<CatalogItemDto> GetCatalogItems(int? pageNumber, int? pageSize, int? catalogTypeId, int? catalogBrandId)
     {
         var connection = GetConnection();
@@ -28,10 +88,11 @@ public class DataMaster
         return result;
     }
 
+    
     public async Task<CatalogItemDto> GetCatalogItemById(int id)
     {
         var connection = GetConnection();
-        var result = await connection.QuerySingleAsync<CatalogItemDto>("SELECT * FROM CatalogItems WHERE Id = @Id", new { Id = id });
+        var result = await connection.QuerySingleAsync<CatalogItemDto>("SELECT * FROM Catalog WHERE Id = @Id", new { Id = id });
         return result;
     }
     public List<CatalogBrandDto> GetCatalogBrands()

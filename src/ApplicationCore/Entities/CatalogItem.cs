@@ -31,6 +31,11 @@ public class CatalogItem : BaseEntity, IAggregateRoot
         PictureUri = pictureUri;
     }
 
+    public void SetId(int id)
+    {
+        this.Id = id;
+    }
+
     public void UpdateDetails(CatalogItemDetails details)
     {
         Guard.Against.NullOrEmpty(details.Name, nameof(details.Name));
@@ -77,4 +82,5 @@ public class CatalogItem : BaseEntity, IAggregateRoot
             Price = price;
         }
     }
+    
 }

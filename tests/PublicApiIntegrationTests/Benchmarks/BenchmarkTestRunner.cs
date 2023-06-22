@@ -20,17 +20,18 @@ public class BenchmarkTestRunner
         _output = output;
     }
 
-    [Fact]
-    public void DoMyStuff()
-    {
-        var logger = new AccumulationLogger();
+    //DO NOT DO BENCHMARKS IN INTEGRATION TESTS
+    //[Fact]
+    //public void DoMyStuff()
+    //{
+    //    var logger = new AccumulationLogger();
 
-        var config = ManualConfig.Create(DefaultConfig.Instance)
-            .AddLogger(logger)
-            .WithOptions(ConfigOptions.DisableOptimizationsValidator);
-        BenchmarkRunner.Run<EndPointBenchmarks>(config);
+    //    var config = ManualConfig.Create(DefaultConfig.Instance)
+    //        .AddLogger(logger)
+    //        .WithOptions(ConfigOptions.DisableOptimizationsValidator);
+    //    BenchmarkRunner.Run<EndPointBenchmarks>(config);
 
-        //write benchmark summary
-        _output.WriteLine(logger.GetLog());
-    }
+    //    //write benchmark summary
+    //    _output.WriteLine(logger.GetLog());
+    //}
 }

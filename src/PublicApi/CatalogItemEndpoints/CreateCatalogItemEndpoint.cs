@@ -18,10 +18,11 @@ namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
 public class CreateCatalogItemEndpoint : IEndpoint<IResult, CreateCatalogItemRequest, IRepository<CatalogItem>>
 {
     private readonly IUriComposer _uriComposer;
-
-    public CreateCatalogItemEndpoint(IUriComposer uriComposer)
+    private readonly DataMaster _dataMaster;
+    public CreateCatalogItemEndpoint(IUriComposer uriComposer, DataMaster dataMaster)
     {
         _uriComposer = uriComposer;
+        _dataMaster = dataMaster;
     }
 
     public void AddRoute(IEndpointRouteBuilder app)
@@ -48,8 +49,8 @@ public class CreateCatalogItemEndpoint : IEndpoint<IResult, CreateCatalogItemReq
         }
 
         var newItem = new CatalogItem(request.CatalogTypeId, request.CatalogBrandId, request.Description, request.Name, request.Price, request.PictureUri);
-        newItem = await itemRepository.AddAsync(newItem);
-
+        var derfnewItem = await itemRepository.AddAsync(newItem);
+        newItem = _dataMaster.AddNewCatalogItem(newItem);
         if (newItem.Id != 0)
         {
             //We disabled the upload functionality and added a default/placeholder image to this sample due to a potential security risk 
