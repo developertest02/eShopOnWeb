@@ -40,16 +40,16 @@ public class CatalogItemGetByIdEndpoint : IEndpoint<IResult, GetByIdCatalogItemR
         if (item is null)
             return Results.NotFound();
 
-        //response.CatalogItem = new CatalogItemDto
-        //{
-        //    Id = item.Id,
-        //    CatalogBrandId = item.CatalogBrandId,
-        //    CatalogTypeId = item.CatalogTypeId,
-        //    Description = item.Description,
-        //    Name = item.Name,
-        //    PictureUri = _uriComposer.ComposePicUri(item.PictureUri),
-        //    Price = item.Price
-        //};
+        response.CatalogItem = new CatalogItemDto
+        {
+            Id = item.Id,
+            CatalogBrandId = item.CatalogBrandId,
+            CatalogTypeId = item.CatalogTypeId,
+            Description = item.Description,
+            Name = item.Name,
+            PictureUri = _uriComposer.ComposePicUri(item.PictureUri),
+            Price = item.Price
+        };
         return Results.Ok(response);
     }
 }

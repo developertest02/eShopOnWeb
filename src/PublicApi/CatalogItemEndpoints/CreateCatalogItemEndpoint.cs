@@ -37,6 +37,43 @@ public class CreateCatalogItemEndpoint : IEndpoint<IResult, CreateCatalogItemReq
             .WithTags("CatalogItemEndpoints");
     }
 
+    //public async Task<IResult> HandleAsync(CreateCatalogItemRequest request, IRepository<CatalogItem> itemRepository)
+    //{
+    //    var response = new CreateCatalogItemResponse(request.CorrelationId());
+
+    //    var catalogItemNameSpecification = new CatalogItemNameSpecification(request.Name);
+    //    var existingCataloogItem = await itemRepository.CountAsync(catalogItemNameSpecification);
+    //    if (existingCataloogItem > 0)
+    //    {
+    //        throw new DuplicateException($"A catalogItem with name {request.Name} already exists");
+    //    }
+
+    //    var newItem = new CatalogItem(request.CatalogTypeId, request.CatalogBrandId, request.Description, request.Name, request.Price, request.PictureUri);
+    //    var derfnewItem = await itemRepository.AddAsync(newItem);
+    //    newItem = _dataMaster.AddNewCatalogItem(newItem);
+    //    if (newItem.Id != 0)
+    //    {
+    //        //We disabled the upload functionality and added a default/placeholder image to this sample due to a potential security risk 
+    //        //  pointed out by the community. More info in this issue: https://github.com/dotnet-architecture/eShopOnWeb/issues/537 
+    //        //  In production, we recommend uploading to a blob storage and deliver the image via CDN after a verification process.
+
+    //        newItem.UpdatePictureUri("eCatalog-item-default.png");
+    //        await itemRepository.UpdateAsync(newItem);
+    //    }
+
+    //    var dto = new CatalogItemDto
+    //    {
+    //        Id = newItem.Id,
+    //        CatalogBrandId = newItem.CatalogBrandId,
+    //        CatalogTypeId = newItem.CatalogTypeId,
+    //        Description = newItem.Description,
+    //        Name = newItem.Name,
+    //        PictureUri = _uriComposer.ComposePicUri(newItem.PictureUri),
+    //        Price = newItem.Price
+    //    };
+    //    response.CatalogItem = dto;
+    //    return Results.Created($"api/catalog-items/{dto.Id}", response);
+    //}
     public async Task<IResult> HandleAsync(CreateCatalogItemRequest request, IRepository<CatalogItem> itemRepository)
     {
         var response = new CreateCatalogItemResponse(request.CorrelationId());
@@ -49,7 +86,7 @@ public class CreateCatalogItemEndpoint : IEndpoint<IResult, CreateCatalogItemReq
         }
 
         var newItem = new CatalogItem(request.CatalogTypeId, request.CatalogBrandId, request.Description, request.Name, request.Price, request.PictureUri);
-        var derfnewItem = await itemRepository.AddAsync(newItem);
+       
         newItem = _dataMaster.AddNewCatalogItem(newItem);
         if (newItem.Id != 0)
         {
@@ -58,7 +95,8 @@ public class CreateCatalogItemEndpoint : IEndpoint<IResult, CreateCatalogItemReq
             //  In production, we recommend uploading to a blob storage and deliver the image via CDN after a verification process.
 
             newItem.UpdatePictureUri("eCatalog-item-default.png");
-            await itemRepository.UpdateAsync(newItem);
+            _dataMaster.UpdateCatalogItem(newItem);
+
         }
 
         var dto = new CatalogItemDto

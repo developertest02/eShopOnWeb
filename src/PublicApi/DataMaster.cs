@@ -92,7 +92,7 @@ public class DataMaster
     public async Task<CatalogItemDto> GetCatalogItemById(int id)
     {
         var connection = GetConnection();
-        var result = await connection.QuerySingleAsync<CatalogItemDto>("SELECT * FROM Catalog WHERE Id = @Id", new { Id = id });
+        var result = await connection.QuerySingleOrDefaultAsync<CatalogItemDto>("SELECT * FROM Catalog WHERE Id = @Id", new { Id = id });
         return result;
     }
     public List<CatalogBrandDto> GetCatalogBrands()
