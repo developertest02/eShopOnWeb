@@ -18,31 +18,7 @@ namespace Microsoft.eShopWeb.PublicApi;
 
 public class DataMaster
 {
-    public void UpdateCatalogItem(ApplicationCore.Entities.CatalogItem source)
-    {
-        var connection = GetConnection();
-        var dynamicParameters = new DynamicParameters();
-        var parameters = new
-        {
-            Id = source.Id,
-            Name = source.Name,
-            Description = source.Description,
-            Price = source.Price,
-            PictureUri = source.PictureUri,
-            CatalogTypeId = source.CatalogTypeId,
-            CatalogBrandId = source.CatalogBrandId
-        };
-        dynamicParameters.AddDynamicParams(parameters);
-
-        // Execute the stored procedure using Dapper
-        var result = connection.Execute("UpdateCatalogItem",
-            dynamicParameters,
-            null,
-            null,
-            CommandType.StoredProcedure);
-
-        
-    }
+    
     public ApplicationCore.Entities.CatalogItem AddNewCatalogItem(ApplicationCore.Entities.CatalogItem source)
     {
         var connection = GetConnection();
@@ -79,6 +55,12 @@ public class DataMaster
 
     }
     
+    public async Task DeleteCatalogItemByIdAsync(int catalogItemId)
+    {
+        var connection = GetConnection();
+        _ = await connection.ExecuteAsync("DeleteCatalogItem", new { Id = catalogItemId }, commandType: CommandType.StoredProcedure);
+
+    }
     public List<CatalogItemDto> GetCatalogItems(int? pageNumber, int? pageSize, int? catalogTypeId, int? catalogBrandId)
     {
         var connection = GetConnection();
@@ -110,6 +92,31 @@ public class DataMaster
         return result;
     }
 
+    public void UpdateCatalogItem(ApplicationCore.Entities.CatalogItem source)
+    {
+        var connection = GetConnection();
+        var dynamicParameters = new DynamicParameters();
+        var parameters = new
+        {
+            Id = source.Id,
+            Name = source.Name,
+            Description = source.Description,
+            Price = source.Price,
+            PictureUri = source.PictureUri,
+            CatalogTypeId = source.CatalogTypeId,
+            CatalogBrandId = source.CatalogBrandId
+        };
+        dynamicParameters.AddDynamicParams(parameters);
+
+        // Execute the stored procedure using Dapper
+        var result = connection.Execute("UpdateCatalogItem",
+            dynamicParameters,
+            null,
+            null,
+            CommandType.StoredProcedure);
+
+
+    }
     private SqlConnection GetConnection()
     {
         var CONNECTION_STRING = "Server=(localdb)\\mssqllocaldb;Integrated Security=true;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;";

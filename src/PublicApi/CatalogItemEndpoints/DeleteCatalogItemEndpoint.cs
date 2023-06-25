@@ -15,6 +15,12 @@ namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
 /// </summary>
 public class DeleteCatalogItemEndpoint : IEndpoint<IResult, DeleteCatalogItemRequest, IRepository<CatalogItem>>
 {
+    private readonly DataMaster _dataMaster;
+    
+    public DeleteCatalogItemEndpoint(DataMaster dataMaster)
+    {
+        _dataMaster = dataMaster;          
+    }
     public void AddRoute(IEndpointRouteBuilder app)
     {
         app.MapDelete("api/catalog-items/{catalogItemId}",
@@ -31,11 +37,13 @@ public class DeleteCatalogItemEndpoint : IEndpoint<IResult, DeleteCatalogItemReq
     {
         var response = new DeleteCatalogItemResponse(request.CorrelationId());
 
-        var itemToDelete = await itemRepository.GetByIdAsync(request.CatalogItemId);
+
+        var itemToDelete = await _dataMaster.GetCatalogItemById(request.CatalogItemId);
         if (itemToDelete is null)
             return Results.NotFound();
 
-        await itemRepository.DeleteAsync(itemToDelete);
+        await _dataMaster.DeleteCatalogItemByIdAsync(request.CatalogItemId);
+
 
         return Results.Ok(response);
     }

@@ -9,8 +9,7 @@ using FluentAssertions;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using static Microsoft.eShopWeb.ApplicationCore.Entities.CatalogItem;
 
-namespace ApplicationTests.DataTests;
-public class DataMasterTests
+namespace ApplicationTests.DataTests;public class DataMasterTests
 {
     [Fact]
     public void CreateCatalogItem() 
@@ -41,5 +40,16 @@ public class DataMasterTests
         var item = await sut.GetCatalogItemById(target.Id);
         item.Price.Should().Be(1m);
 
+    }
+
+    [Fact]
+    public async Task ShouldDeleteAsync()
+    {
+        var sut = new Microsoft.eShopWeb.PublicApi.DataMaster();
+        var target = new CatalogItem(1, 1, $"Test Description {Guid.NewGuid()}", $"Item - {Guid.NewGuid()}", 100m, "https://cdn.shopify.com/s/files/1/2530/7762/products/rosemary-garlic-whole-chicken-008_200x200.jpg?v=1631543769");
+        sut.AddNewCatalogItem(target);
+        await sut.DeleteCatalogItemByIdAsync(target.Id);
+        var item = await sut.GetCatalogItemById(target.Id);
+        item.Should().BeNull();
     }
 }
