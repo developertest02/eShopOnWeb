@@ -1,5 +1,5 @@
 ﻿using Microsoft.eShopWeb;
-using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
+using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints.Deprecated;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
 using System.Threading.Tasks;

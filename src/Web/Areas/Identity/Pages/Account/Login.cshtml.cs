@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -110,7 +109,11 @@ public class LoginModel : PageModel
             var anonymousId = Request.Cookies[Constants.BASKET_COOKIENAME];
             if (Guid.TryParse(anonymousId, out var _))
             {
-                Guard.Against.NullOrEmpty(userName, nameof(userName));
+                if (string.IsNullOrEmpty(userName))
+                {
+                    throw new ArgumentNullException(nameof(userName));
+                }
+                //Guard.Against.NullOrEmpty(userName, nameof(userName));
                 await _basketService.TransferBasketAsync(anonymousId, userName);
             }
             Response.Cookies.Delete(Constants.BASKET_COOKIENAME);

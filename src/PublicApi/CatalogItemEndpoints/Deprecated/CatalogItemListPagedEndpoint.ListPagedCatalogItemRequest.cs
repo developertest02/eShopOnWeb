@@ -1,4 +1,4 @@
-﻿namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
+﻿namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints.Deprecated;
 
 public class ListPagedCatalogItemRequest : BaseRequest
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using Ardalis.GuardClauses;
+
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Entities;
@@ -38,9 +38,9 @@ public class CatalogItem : BaseEntity, IAggregateRoot
 
     public void UpdateDetails(CatalogItemDetails details)
     {
-        Guard.Against.NullOrEmpty(details.Name, nameof(details.Name));
-        Guard.Against.NullOrEmpty(details.Description, nameof(details.Description));
-        Guard.Against.NegativeOrZero(details.Price, nameof(details.Price));
+        //Guard.Against.NullOrEmpty(details.Name, nameof(details.Name));
+        //Guard.Against.NullOrEmpty(details.Description, nameof(details.Description));
+        //Guard.Against.NegativeOrZero(details.Price, nameof(details.Price));
 
         Name = details.Name;
         Description = details.Description;
@@ -49,13 +49,17 @@ public class CatalogItem : BaseEntity, IAggregateRoot
 
     public void UpdateBrand(int catalogBrandId)
     {
-        Guard.Against.Zero(catalogBrandId, nameof(catalogBrandId));
+        if(catalogBrandId == 0)
+            throw new ArgumentOutOfRangeException(nameof(catalogBrandId));
+ 
         CatalogBrandId = catalogBrandId;
     }
 
     public void UpdateType(int catalogTypeId)
     {
-        Guard.Against.Zero(catalogTypeId, nameof(catalogTypeId));
+        if (catalogTypeId == 0)
+            throw new ArgumentOutOfRangeException(nameof(catalogTypeId));
+
         CatalogTypeId = catalogTypeId;
     }
 

@@ -10,12 +10,12 @@ using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
 using MinimalApi.Endpoint;
 
-namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
+namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints.Deprecated;
 
 /// <summary>
 /// Creates a new Catalog Item
 /// </summary>
-public class CreateCatalogItemEndpoint 
+public class CreateCatalogItemEndpoint
 {
     private readonly IUriComposer _uriComposer;
     private readonly DataMaster _dataMaster;
@@ -86,7 +86,7 @@ public class CreateCatalogItemEndpoint
         }
 
         var newItem = new CatalogItem(request.CatalogTypeId, request.CatalogBrandId, request.Description, request.Name, request.Price, request.PictureUri);
-       
+
         newItem = _dataMaster.AddNewCatalogItem(newItem);
         if (newItem.Id != 0)
         {

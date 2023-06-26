@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.eShopWeb.Infrastructure.Identity;
@@ -34,7 +33,9 @@ public class Basket : ViewComponent
     {
         if (_signInManager.IsSignedIn(HttpContext.User))
         {
-            Guard.Against.Null(User?.Identity?.Name, nameof(User.Identity.Name));
+            if (User?.Identity?.Name == null)
+                throw new ArgumentNullException(nameof(User.Identity.Name));
+
             return await _basketService.CountTotalBasketItems(User.Identity.Name);
         }
 

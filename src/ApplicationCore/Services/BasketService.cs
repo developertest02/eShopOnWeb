@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
+
 using Ardalis.Result;
 using Microsoft.eShopWeb.ApplicationCore.Entities.BasketAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
@@ -40,7 +40,9 @@ public class BasketService : IBasketService
     public async Task DeleteBasketAsync(int basketId)
     {
         var basket = await _basketRepository.GetByIdAsync(basketId);
-        Guard.Against.Null(basket, nameof(basket));
+        if (basket is null)
+            throw new KeyNotFoundException($"No basket found for ID {basketId}.");
+
         await _basketRepository.DeleteAsync(basket);
     }
 

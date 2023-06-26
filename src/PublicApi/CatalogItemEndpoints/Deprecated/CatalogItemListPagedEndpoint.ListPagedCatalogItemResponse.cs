@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
+namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints.Deprecated;
 
 public class ListPagedCatalogItemResponse : BaseResponse
 {

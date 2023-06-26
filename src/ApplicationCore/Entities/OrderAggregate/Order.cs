@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ardalis.GuardClauses;
-using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 
+using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 namespace Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 
 public class Order : BaseEntity, IAggregateRoot
@@ -12,7 +11,11 @@ public class Order : BaseEntity, IAggregateRoot
 
     public Order(string buyerId, Address shipToAddress, List<OrderItem> items)
     {
-        Guard.Against.NullOrEmpty(buyerId, nameof(buyerId));
+        if (buyerId == null)
+        {
+            throw new ArgumentNullException(nameof(buyerId));
+        }
+        //Guard.Against.NullOrEmpty(buyerId, nameof(buyerId));
 
         BuyerId = buyerId;
         ShipToAddress = shipToAddress;

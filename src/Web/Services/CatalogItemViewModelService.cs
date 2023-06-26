@@ -1,5 +1,4 @@
-﻿using Ardalis.GuardClauses;
-using Microsoft.eShopWeb.ApplicationCore.Entities;
+﻿using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.Web.Interfaces;
 using Microsoft.eShopWeb.Web.ViewModels;
@@ -19,7 +18,11 @@ public class CatalogItemViewModelService : ICatalogItemViewModelService
     {
         var existingCatalogItem = await _catalogItemRepository.GetByIdAsync(viewModel.Id);
 
-        Guard.Against.Null(existingCatalogItem, nameof(existingCatalogItem));
+        if (existingCatalogItem == null)
+        {
+            throw new ArgumentException($"Catalog item with id {viewModel.Id} not found");
+        }
+        //Guard.Against.Null(existingCatalogItem, nameof(existingCatalogItem));
 
         CatalogItem.CatalogItemDetails details = new(viewModel.Name, existingCatalogItem.Description, viewModel.Price);
         existingCatalogItem.UpdateDetails(details);

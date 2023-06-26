@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NuGet.Protocol;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints.Deprecated;
 
 namespace PublicApiIntegrationTests.Benchmarks;
 

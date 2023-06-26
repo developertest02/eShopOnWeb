@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -80,8 +79,9 @@ public class RegisterModel : PageModel
                     pageHandler: null,
                     values: new { userId = user.Id, code = code },
                     protocol: Request.Scheme);
-
-                Guard.Against.Null(callbackUrl, nameof(callbackUrl));
+                if (callbackUrl == null)
+                    throw new InvalidOperationException("callbackUrl is null");
+                
                 await _emailSender.SendEmailAsync(Input!.Email!, "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 

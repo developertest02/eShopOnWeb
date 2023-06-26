@@ -15,7 +15,7 @@ using Microsoft.eShopWeb.ApplicationCore.Services;
 using Microsoft.eShopWeb.Infrastructure.Data;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.PublicApi;
-using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
+using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints.Deprecated;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Xunit;

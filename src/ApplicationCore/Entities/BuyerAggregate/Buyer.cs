@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Ardalis.GuardClauses;
+
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Entities.BuyerAggregate;
@@ -17,7 +17,7 @@ public class Buyer : BaseEntity, IAggregateRoot
 
     public Buyer(string identity) : this()
     {
-        Guard.Against.NullOrEmpty(identity, nameof(identity));
+        //Guard.Against.NullOrEmpty(identity, nameof(identity));
         IdentityGuid = identity;
     }
 }

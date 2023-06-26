@@ -4,12 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.Infrastructure.Data;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.PublicApi.AuthEndpoints;
+using Microsoft.eShopWeb.PublicApi.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.eShopWeb.FunctionalTests.PublicApi;
 
-public class TestApiApplication : WebApplicationFactory<AuthenticateEndpoint>
+public class TestApiApplication : WebApplicationFactory<AuthenticateController>
 {
     private readonly string _environment = "Testing";
 

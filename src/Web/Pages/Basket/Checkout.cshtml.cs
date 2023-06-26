@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -69,7 +69,21 @@ public class CheckoutModel : PageModel
 
     private async Task SetBasketModelAsync()
     {
-        Guard.Against.Null(User?.Identity?.Name, nameof(User.Identity.Name));
+        if(User == null)
+        {
+            throw new ApplicationException("Cannot get user details");
+        }
+
+        if (User.Identity == null)
+        {
+            throw new ApplicationException("Cannot get user details");
+        }
+        if (User.Identity.Name == null)
+        {
+            throw new ApplicationException("Cannot get user details");
+        }
+        
+
         if (_signInManager.IsSignedIn(HttpContext.User))
         {
             BasketModel = await _basketViewModelService.GetOrCreateBasketForUser(User.Identity.Name);

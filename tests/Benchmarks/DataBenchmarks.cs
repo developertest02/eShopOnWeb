@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
-using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
+using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints.Deprecated;
 
 namespace Benchmarks;
 public class DataBenchmarks

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Text.Encodings.Web;
-using Ardalis.GuardClauses;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -120,7 +120,13 @@ public class ManageController : Controller
 
         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-        Guard.Against.Null(callbackUrl, nameof(callbackUrl));
+        if(callbackUrl == null)
+        {
+            throw new ApplicationException($"Unable to generate email confirmation link for user with ID '{user.Id}'.");
+        }
+
+
+      
         var email = user.Email;
         if (email == null)
         {
