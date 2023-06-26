@@ -37,13 +37,13 @@ public class CatalogContextSeed
                 await catalogContext.SaveChangesAsync();
             }
 
-            if (!await catalogContext.CatalogItems.AnyAsync())
-            {
-                await catalogContext.CatalogItems.AddRangeAsync(
-                    GetPreconfiguredItems());
+            //if (!await catalogContext.CatalogItems.AnyAsync())
+            //{
+            //    await catalogContext.CatalogItems.AddRangeAsync(
+            //        GetPreconfiguredItems());
 
-                await catalogContext.SaveChangesAsync();
-            }
+            //    await catalogContext.SaveChangesAsync();
+            //}
         }
         catch (Exception ex)
         {
@@ -80,7 +80,7 @@ public class CatalogContextSeed
             };
     }
 
-    static IEnumerable<CatalogItem> GetPreconfiguredItems()
+    public static IEnumerable<CatalogItem> GetPreconfiguredItems()
     {
         return new List<CatalogItem>
             {

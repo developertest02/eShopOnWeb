@@ -11,7 +11,7 @@ namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
 /// <summary>
 /// Get a Catalog Item by Id
 /// </summary>
-public class CatalogItemGetByIdEndpoint : IEndpoint<IResult, GetByIdCatalogItemRequest, IRepository<CatalogItem>>
+public class CatalogItemGetByIdEndpoint
 {
     private readonly IUriComposer _uriComposer;
     private readonly DataMaster _dataMaster;

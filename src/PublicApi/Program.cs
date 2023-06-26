@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 using BlazorShared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -147,6 +148,9 @@ using (var scope = app.Services.CreateScope())
         var roleManager = scopedProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var identityContext = scopedProvider.GetRequiredService<AppIdentityDbContext>();
         await AppIdentityDbContextSeed.SeedAsync(identityContext, userManager, roleManager);
+
+        var dm = new DataMaster();
+        dm.SeedDatabase();
     }
     catch (Exception ex)
     {

@@ -117,6 +117,15 @@ public class DataMaster
 
 
     }
+
+    public async void SeedDatabase()
+    {
+        var connection = GetConnection();
+        connection.Execute("Truncate table Catalog");
+        var dm = new DataMaster();
+        var catalogItems = CatalogContextSeed.GetPreconfiguredItems().ToList();
+        catalogItems.ForEach(c => dm.AddNewCatalogItem(c));
+    }
     private SqlConnection GetConnection()
     {
         var CONNECTION_STRING = "Server=(localdb)\\mssqllocaldb;Integrated Security=true;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;";

@@ -13,7 +13,7 @@ namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
 /// <summary>
 /// Deletes a Catalog Item
 /// </summary>
-public class DeleteCatalogItemEndpoint : IEndpoint<IResult, DeleteCatalogItemRequest, IRepository<CatalogItem>>
+public class DeleteCatalogItemEndpoint 
 {
     private readonly DataMaster _dataMaster;
     

@@ -15,7 +15,7 @@ namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
 /// <summary>
 /// List Catalog Items (paged)
 /// </summary>
-public class CatalogItemListPagedEndpoint : IEndpoint<IResult, ListPagedCatalogItemRequest, IRepository<CatalogItem>>
+public class CatalogItemListPagedEndpoint 
 {
     private readonly IUriComposer _uriComposer;
     private readonly IMapper _mapper;
