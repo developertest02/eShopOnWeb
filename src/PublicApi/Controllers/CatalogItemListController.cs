@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.eShopWeb.ApplicationCore.Entities;
+using Microsoft.eShopWeb.ApplicationCore.Exceptions;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
+using Microsoft.eShopWeb.ApplicationCore.Specifications;
 using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
-using static BlazorShared.Authorization.Constants;
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,7 +31,30 @@ public class CatalogItemListController : ControllerBase
     [HttpGet]
     public async Task<IResult> Get(int? pageSize, int? pageIndex, int? catalogBrandId, int? catalogTypeId)
     {
-        return await HandleAsync(new ListPagedCatalogItemRequest(pageSize, pageIndex, catalogBrandId, catalogTypeId));
+        var request = new ListPagedCatalogItemRequest(pageSize, pageIndex, catalogBrandId, catalogTypeId);
+        var response = new ListPagedCatalogItemResponse(request.CorrelationId());
+        var items = _dataMaster.GetCatalogItems(request.PageIndex, request.PageSize, request.CatalogTypeId, request.CatalogBrandId);
+
+        int totalItems = items.Count;
+
+        response.CatalogItems.AddRange(items);
+        foreach (CatalogItemDto item in response.CatalogItems)
+        {
+            item.PictureUri = _uriComposer.ComposePicUri(item.PictureUri);
+        }
+
+        if (request.PageSize > 0)
+        {
+            response.PageCount = int.Parse(Math.Ceiling((decimal)totalItems / request.PageSize).ToString());
+        }
+        else
+        {
+            response.PageCount = totalItems > 0 ? 1 : 0;
+        }
+
+
+
+        return Results.Ok(response);
     }
 
     // GET api/<CatalogItemList>/5
@@ -57,8 +83,44 @@ public class CatalogItemListController : ControllerBase
 
     // POST api/<CatalogItemList>
     [HttpPost]
-    public void Post([FromBody] string value)
+    public async Task<IResult> Post([FromBody] CreateCatalogItemRequest request)
     {
+        var response = new CreateCatalogItemResponse(request.CorrelationId());
+
+        var catalogItemNameSpecification = new CatalogItemNameSpecification(request.Name);
+
+        //var existingCataloogItem = await itemRepository.CountAsync(catalogItemNameSpecification);
+        //if (existingCataloogItem > 0)
+        //{
+        //    throw new DuplicateException($"A catalogItem with name {request.Name} already exists");
+        //}
+
+        var newItem = new CatalogItem(request.CatalogTypeId, request.CatalogBrandId, request.Description, request.Name, request.Price, request.PictureUri);
+        newItem = _dataMaster.AddNewCatalogItem(newItem);
+
+        if (newItem.Id != 0)
+        {
+            //We disabled the upload functionality and added a default/placeholder image to this sample due to a potential security risk 
+            //  pointed out by the community. More info in this issue: https://github.com/dotnet-architecture/eShopOnWeb/issues/537 
+            //  In production, we recommend uploading to a blob storage and deliver the image via CDN after a verification process.
+
+            newItem.UpdatePictureUri("eCatalog-item-default.png");
+            _dataMaster.UpdateCatalogItem(newItem);
+
+        }
+
+        var dto = new CatalogItemDto
+        {
+            Id = newItem.Id,
+            CatalogBrandId = newItem.CatalogBrandId,
+            CatalogTypeId = newItem.CatalogTypeId,
+            Description = newItem.Description,
+            Name = newItem.Name,
+            PictureUri = _uriComposer.ComposePicUri(newItem.PictureUri),
+            Price = newItem.Price
+        };
+        response.CatalogItem = dto;
+        return Results.Created($"api/catalog-items/{dto.Id}", response);
     }
 
     // PUT api/<CatalogItemList>/5
@@ -86,30 +148,30 @@ public class CatalogItemListController : ControllerBase
         return Results.Ok(response);
     }
 
-    public async Task<IResult> HandleAsync(ListPagedCatalogItemRequest request)
-    {
-        var response = new ListPagedCatalogItemResponse(request.CorrelationId());
-        var items = _dataMaster.GetCatalogItems(request.PageIndex, request.PageSize, request.CatalogTypeId, request.CatalogBrandId);
+    //public async Task<IResult> HandleAsync(ListPagedCatalogItemRequest request)
+    //{
+    //    var response = new ListPagedCatalogItemResponse(request.CorrelationId());
+    //    var items = _dataMaster.GetCatalogItems(request.PageIndex, request.PageSize, request.CatalogTypeId, request.CatalogBrandId);
 
-        int totalItems = items.Count;
+    //    int totalItems = items.Count;
 
-        response.CatalogItems.AddRange(items);
-        foreach (CatalogItemDto item in response.CatalogItems)
-        {
-            item.PictureUri = _uriComposer.ComposePicUri(item.PictureUri);
-        }
+    //    response.CatalogItems.AddRange(items);
+    //    foreach (CatalogItemDto item in response.CatalogItems)
+    //    {
+    //        item.PictureUri = _uriComposer.ComposePicUri(item.PictureUri);
+    //    }
 
-        if (request.PageSize > 0)
-        {
-            response.PageCount = int.Parse(Math.Ceiling((decimal)totalItems / request.PageSize).ToString());
-        }
-        else
-        {
-            response.PageCount = totalItems > 0 ? 1 : 0;
-        }
+    //    if (request.PageSize > 0)
+    //    {
+    //        response.PageCount = int.Parse(Math.Ceiling((decimal)totalItems / request.PageSize).ToString());
+    //    }
+    //    else
+    //    {
+    //        response.PageCount = totalItems > 0 ? 1 : 0;
+    //    }
 
 
 
-        return Results.Ok(response);
-    }
+    //    return Results.Ok(response);
+    //}
 }

@@ -21,17 +21,17 @@ public class DeleteCatalogItemEndpoint
     {
         _dataMaster = dataMaster;          
     }
-    public void AddRoute(IEndpointRouteBuilder app)
-    {
-        app.MapDelete("api/catalog-items/{catalogItemId}",
-            [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async
-            (int catalogItemId, IRepository<CatalogItem> itemRepository) =>
-            {
-                return await HandleAsync(new DeleteCatalogItemRequest(catalogItemId), itemRepository);
-            })
-            .Produces<DeleteCatalogItemResponse>()
-            .WithTags("CatalogItemEndpoints");
-    }
+    //public void AddRoute(IEndpointRouteBuilder app)
+    //{
+    //    app.MapDelete("api/catalog-items/{catalogItemId}",
+    //        [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async
+    //        (int catalogItemId, IRepository<CatalogItem> itemRepository) =>
+    //        {
+    //            return await HandleAsync(new DeleteCatalogItemRequest(catalogItemId), itemRepository);
+    //        })
+    //        .Produces<DeleteCatalogItemResponse>()
+    //        .WithTags("CatalogItemEndpoints");
+    //}
 
     public async Task<IResult> HandleAsync(DeleteCatalogItemRequest request, IRepository<CatalogItem> itemRepository)
     {

@@ -13,7 +13,7 @@ namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
 /// <summary>
 /// Updates a Catalog Item
 /// </summary>
-public class UpdateCatalogItemEndpoint : IEndpoint<IResult, UpdateCatalogItemRequest, IRepository<CatalogItem>>
+public class UpdateCatalogItemEndpoint 
 { 
     private readonly IUriComposer _uriComposer;
 
@@ -22,17 +22,17 @@ public class UpdateCatalogItemEndpoint : IEndpoint<IResult, UpdateCatalogItemReq
         _uriComposer = uriComposer;
     }
 
-    public void AddRoute(IEndpointRouteBuilder app)
-    {
-        app.MapPut("api/catalog-items",
-            [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async
-            (UpdateCatalogItemRequest request, IRepository<CatalogItem> itemRepository) =>
-            {
-                return await HandleAsync(request, itemRepository);
-            })
-            .Produces<UpdateCatalogItemResponse>()
-            .WithTags("CatalogItemEndpoints");
-    }
+    //public void AddRoute(IEndpointRouteBuilder app)
+    //{
+    //    app.MapPut("api/catalog-items",
+    //        [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async
+    //        (UpdateCatalogItemRequest request, IRepository<CatalogItem> itemRepository) =>
+    //        {
+    //            return await HandleAsync(request, itemRepository);
+    //        })
+    //        .Produces<UpdateCatalogItemResponse>()
+    //        .WithTags("CatalogItemEndpoints");
+    //}
 
     public async Task<IResult> HandleAsync(UpdateCatalogItemRequest request, IRepository<CatalogItem> itemRepository)
     {

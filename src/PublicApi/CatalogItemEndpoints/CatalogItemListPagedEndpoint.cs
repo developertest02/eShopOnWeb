@@ -28,16 +28,16 @@ public class CatalogItemListPagedEndpoint
     }
 
 
-    public void AddRoute(IEndpointRouteBuilder app)
-    {
-        app.MapGet("api/catalog-items",
-            async (int? pageSize, int? pageIndex, int? catalogBrandId, int? catalogTypeId, IRepository<CatalogItem> itemRepository) =>
-            {
-                return await HandleAsync(new ListPagedCatalogItemRequest(pageSize, pageIndex, catalogBrandId, catalogTypeId), itemRepository);
-            })
-            .Produces<ListPagedCatalogItemResponse>()
-            .WithTags("CatalogItemEndpoints");
-    }
+    //public void AddRoute(IEndpointRouteBuilder app)
+    //{
+    //    app.MapGet("api/catalog-items",
+    //        async (int? pageSize, int? pageIndex, int? catalogBrandId, int? catalogTypeId, IRepository<CatalogItem> itemRepository) =>
+    //        {
+    //            return await HandleAsync(new ListPagedCatalogItemRequest(pageSize, pageIndex, catalogBrandId, catalogTypeId), itemRepository);
+    //        })
+    //        .Produces<ListPagedCatalogItemResponse>()
+    //        .WithTags("CatalogItemEndpoints");
+    //}
 
     //public async Task<IResult> HandleAsync(ListPagedCatalogItemRequest request, IRepository<CatalogItem> itemRepository)
     //{
