@@ -10,16 +10,13 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.Infrastructure.Data;
-using Microsoft.eShopWeb.PublicApi.CatalogBrandEndpoints;
-using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
-using Microsoft.eShopWeb.PublicApi.CatalogTypeEndpoints;
 
-namespace Microsoft.eShopWeb.PublicApi;
+namespace Microsoft.eShopWeb.ApplicationCore;
 
 public class DataMaster
 {
-    
-    public ApplicationCore.Entities.CatalogItem AddNewCatalogItem(ApplicationCore.Entities.CatalogItem source)
+
+    public Entities.CatalogItem AddNewCatalogItem(Entities.CatalogItem source)
     {
         var connection = GetConnection();
         // Define a parameter for the inserted Id value
@@ -33,12 +30,12 @@ public class DataMaster
 
         var parameters = new
         {
-            Name = source.Name,
-            Description = source.Description,
-            Price = source.Price,
-            PictureUri = source.PictureUri,
-            CatalogTypeId = source.CatalogTypeId,
-            CatalogBrandId = source.CatalogBrandId
+            source.Name,
+            source.Description,
+            source.Price,
+            source.PictureUri,
+            source.CatalogTypeId,
+            source.CatalogBrandId
         };
         dynamicParameters.AddDynamicParams(parameters);
 
@@ -54,7 +51,7 @@ public class DataMaster
 
 
     }
-    
+
     public async Task DeleteCatalogItemByIdAsync(int catalogItemId)
     {
         var connection = GetConnection();
@@ -63,7 +60,7 @@ public class DataMaster
     }
     public List<CatalogItemDto> GetCatalogItems(int? pageNumber, int? pageSize, int? catalogTypeId, int? catalogBrandId)
     {
-        
+
         var connection = GetConnection();
         var queryValues = new { PageNumber = pageNumber, PageSize = pageSize, CatalogTypeId = catalogTypeId, CatalogBrandId = catalogBrandId };
         var procedure = "FetchCatalogItems";
@@ -71,7 +68,7 @@ public class DataMaster
         return result;
     }
 
-    
+
     public async Task<CatalogItemDto> GetCatalogItemById(int id)
     {
         var connection = GetConnection();
@@ -83,7 +80,7 @@ public class DataMaster
         var connection = GetConnection();
         var result = connection.Query<CatalogBrandDto>("SELECT Id, Brand as Name FROM CatalogBrands");
         return result.ToList();
-        
+
     }
 
     public List<CatalogTypeDto> GetCatalogTypes()
@@ -93,19 +90,19 @@ public class DataMaster
         return result;
     }
 
-    public void UpdateCatalogItem(ApplicationCore.Entities.CatalogItem source)
+    public void UpdateCatalogItem(Entities.CatalogItem source)
     {
         var connection = GetConnection();
         var dynamicParameters = new DynamicParameters();
         var parameters = new
         {
-            Id = source.Id,
-            Name = source.Name,
-            Description = source.Description,
-            Price = source.Price,
-            PictureUri = source.PictureUri,
-            CatalogTypeId = source.CatalogTypeId,
-            CatalogBrandId = source.CatalogBrandId
+            source.Id,
+            source.Name,
+            source.Description,
+            source.Price,
+            source.PictureUri,
+            source.CatalogTypeId,
+            source.CatalogBrandId
         };
         dynamicParameters.AddDynamicParams(parameters);
 

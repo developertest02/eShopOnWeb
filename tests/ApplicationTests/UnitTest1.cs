@@ -7,10 +7,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.Infrastructure.Data;
-using Microsoft.eShopWeb.PublicApi;
 using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
 using NuGet.Protocol.Plugins;
-using static Microsoft.eShopWeb.PublicApi.DataMaster;
+using static Microsoft.eShopWeb.ApplicationCore.DataMaster;
 
 namespace ApplicationTests;
 
