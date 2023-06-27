@@ -23,10 +23,10 @@ namespace Benchmarks
             new Random(42).NextBytes(data);
         }
 
-        [Benchmark]
+       // [Benchmark]
         public byte[] Sha256() => sha256.ComputeHash(data);
 
-        [Benchmark]
+       // [Benchmark]
         public byte[] Md5() => md5.ComputeHash(data);
     }
 

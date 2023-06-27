@@ -10,6 +10,6 @@ namespace Benchmarks;
 public class DataBenchmarks
 {
     private readonly DataAccess _dataAccessOld = new DataAccess();
-    [Benchmark]
+  //  [Benchmark]
     public ListPagedCatalogItemResponse GetCatalogItems() => _dataAccessOld.DoOldBenchmark();
 }

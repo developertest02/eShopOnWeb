@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -51,6 +52,9 @@ public class TestApplication : WebApplicationFactory<IBasketViewModelService>
             });
         });
 
-        return base.CreateHost(builder);
+        var result = base.CreateHost(builder);
+        var p = Process.GetCurrentProcess();
+        
+        return result;
     }
 }

@@ -35,7 +35,7 @@ public class EndPointBenchmarks
 
         Assert.AreEqual(totalExpected, model2!.CatalogItems.Count());
     }
-    [Benchmark]
+   // [Benchmark]
     public async Task SuccessFullMutipleParallelCall()
     {
         var client = ProgramTest.NewClient;

@@ -63,6 +63,7 @@ public class DataMaster
     }
     public List<CatalogItemDto> GetCatalogItems(int? pageNumber, int? pageSize, int? catalogTypeId, int? catalogBrandId)
     {
+        
         var connection = GetConnection();
         var queryValues = new { PageNumber = pageNumber, PageSize = pageSize, CatalogTypeId = catalogTypeId, CatalogBrandId = catalogBrandId };
         var procedure = "FetchCatalogItems";

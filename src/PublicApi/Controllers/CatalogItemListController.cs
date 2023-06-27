@@ -84,6 +84,7 @@ public class CatalogItemListController : ControllerBase
 
     // POST api/<CatalogItemList>
     [HttpPost]
+    [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IResult> Post([FromBody] CreateCatalogItemRequest request)
     {
         var response = new CreateCatalogItemResponse(request.CorrelationId());

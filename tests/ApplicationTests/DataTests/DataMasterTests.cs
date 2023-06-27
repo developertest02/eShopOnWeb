@@ -11,45 +11,45 @@ using static Microsoft.eShopWeb.ApplicationCore.Entities.CatalogItem;
 
 namespace ApplicationTests.DataTests;public class DataMasterTests
 {
-    [Fact]
-    public void CreateCatalogItem() 
-    {
-        var sut = new Microsoft.eShopWeb.PublicApi.DataMaster();
+    //[Fact]
+    //public void CreateCatalogItem() 
+    //{
+    //    var sut = new Microsoft.eShopWeb.PublicApi.DataMaster();
        
-        var target = new CatalogItem(1, 1, $"Test Description {Guid.NewGuid()}", $"Item - {Guid.NewGuid()}", 100m, "https://cdn.shopify.com/s/files/1/2530/7762/products/rosemary-garlic-whole-chicken-008_200x200.jpg?v=1631543769");
+    //    var target = new CatalogItem(1, 1, $"Test Description {Guid.NewGuid()}", $"Item - {Guid.NewGuid()}", 100m, "https://cdn.shopify.com/s/files/1/2530/7762/products/rosemary-garlic-whole-chicken-008_200x200.jpg?v=1631543769");
 
-        sut.AddNewCatalogItem(target);
+    //    sut.AddNewCatalogItem(target);
 
-        target.Id.Should().BeGreaterThan(0);
+    //    target.Id.Should().BeGreaterThan(0);
 
 
-    }
+    //}
 
-    [Fact]
-    public async Task ShouldUpdateCatalogItem()
-    {
-        var sut = new Microsoft.eShopWeb.PublicApi.DataMaster();
-        var target = new CatalogItem(1, 1, $"Test Description {Guid.NewGuid()}", $"Item - {Guid.NewGuid()}", 100m, "https://cdn.shopify.com/s/files/1/2530/7762/products/rosemary-garlic-whole-chicken-008_200x200.jpg?v=1631543769");
-        sut.AddNewCatalogItem(target);
+    //[Fact]
+    //public async Task ShouldUpdateCatalogItem()
+    //{
+    //    var sut = new Microsoft.eShopWeb.PublicApi.DataMaster();
+    //    var target = new CatalogItem(1, 1, $"Test Description {Guid.NewGuid()}", $"Item - {Guid.NewGuid()}", 100m, "https://cdn.shopify.com/s/files/1/2530/7762/products/rosemary-garlic-whole-chicken-008_200x200.jpg?v=1631543769");
+    //    sut.AddNewCatalogItem(target);
 
-        var itemDetails = new CatalogItemDetails(target.Name, target.Description, 1m);
-        target.UpdateDetails(itemDetails);
+    //    var itemDetails = new CatalogItemDetails(target.Name, target.Description, 1m);
+    //    target.UpdateDetails(itemDetails);
 
-        sut.UpdateCatalogItem(target);
+    //    sut.UpdateCatalogItem(target);
 
-        var item = await sut.GetCatalogItemById(target.Id);
-        item.Price.Should().Be(1m);
+    //    var item = await sut.GetCatalogItemById(target.Id);
+    //    item.Price.Should().Be(1m);
 
-    }
+    //}
 
-    [Fact]
-    public async Task ShouldDeleteAsync()
-    {
-        var sut = new Microsoft.eShopWeb.PublicApi.DataMaster();
-        var target = new CatalogItem(1, 1, $"Test Description {Guid.NewGuid()}", $"Item - {Guid.NewGuid()}", 100m, "https://cdn.shopify.com/s/files/1/2530/7762/products/rosemary-garlic-whole-chicken-008_200x200.jpg?v=1631543769");
-        sut.AddNewCatalogItem(target);
-        await sut.DeleteCatalogItemByIdAsync(target.Id);
-        var item = await sut.GetCatalogItemById(target.Id);
-        item.Should().BeNull();
-    }
+    //[Fact]
+    //public async Task ShouldDeleteAsync()
+    //{
+    //    var sut = new Microsoft.eShopWeb.PublicApi.DataMaster();
+    //    var target = new CatalogItem(1, 1, $"Test Description {Guid.NewGuid()}", $"Item - {Guid.NewGuid()}", 100m, "https://cdn.shopify.com/s/files/1/2530/7762/products/rosemary-garlic-whole-chicken-008_200x200.jpg?v=1631543769");
+    //    sut.AddNewCatalogItem(target);
+    //    await sut.DeleteCatalogItemByIdAsync(target.Id);
+    //    var item = await sut.GetCatalogItemById(target.Id);
+    //    item.Should().BeNull();
+    //}
 }

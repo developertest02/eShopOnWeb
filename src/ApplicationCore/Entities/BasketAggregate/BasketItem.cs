@@ -18,6 +18,8 @@ public class BasketItem : BaseEntity
 
     public void AddQuantity(int quantity)
     {
+        if (quantity < 0)
+            throw new System.ArgumentOutOfRangeException();
         //Guard.Against.OutOfRange(quantity, nameof(quantity), 0, int.MaxValue);
 
         Quantity += quantity;
@@ -25,6 +27,8 @@ public class BasketItem : BaseEntity
 
     public void SetQuantity(int quantity)
     {
+        if (quantity < 0)
+            throw new System.ArgumentOutOfRangeException();
         //Guard.Against.OutOfRange(quantity, nameof(quantity), 0, int.MaxValue);
 
         Quantity = quantity;
