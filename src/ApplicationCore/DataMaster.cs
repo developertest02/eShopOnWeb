@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,12 +7,34 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.eShopWeb.ApplicationCore.Entities.BasketAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Entities.BuyerAggregate;
+using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
+using static Dapper.SqlMapper;
 using CatalogItem = Microsoft.eShopWeb.ApplicationCore.Entities.CatalogItem;
 
 namespace Microsoft.eShopWeb.ApplicationCore;
 
 public class DataMaster : IDataMaster
 {
+    private SqlConnection GetConnection()
+    {
+        var CONNECTION_STRING = "Server=(localdb)\\mssqllocaldb;Integrated Security=true;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;";
+        var connection = new SqlConnection(CONNECTION_STRING);
+        return connection;
+    }
+
+    
+    public async void SeedDatabase()
+    {
+        var connection = GetConnection();
+        connection.Execute(
+        "ResetDatabase",   
+           commandType: CommandType.StoredProcedure);
+        var dm = new DataMaster();
+        var catalogItems = GetPreconfiguredItems().ToList();
+        catalogItems.ForEach(c => dm.AddNewCatalogItem(c));
+    }
+
+    #region catalog
 
     public Entities.CatalogItem AddNewCatalogItem(Entities.CatalogItem source)
     {
@@ -245,22 +268,6 @@ public class DataMaster : IDataMaster
 
 
     }
-
-    public async void SeedDatabase()
-    {
-        var connection = GetConnection();
-        connection.Execute("Truncate table Catalog");
-        var dm = new DataMaster();
-        var catalogItems = GetPreconfiguredItems().ToList();
-        catalogItems.ForEach(c => dm.AddNewCatalogItem(c));
-    }
-    private SqlConnection GetConnection()
-    {
-        var CONNECTION_STRING = "Server=(localdb)\\mssqllocaldb;Integrated Security=true;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;";
-        var connection = new SqlConnection(CONNECTION_STRING);
-        return connection;
-    }
-
     public static IEnumerable<CatalogItem> GetPreconfiguredItems()
     {
         return new List<CatalogItem>
@@ -279,4 +286,85 @@ public class DataMaster : IDataMaster
                 new(2,5, "Prism White TShirt", "Prism White TShirt", 12, "http://catalogbaseurltobereplaced/images/products/12.png")
             };
     }
+
+    #endregion
+
+    #region orders
+    public async Task SaveNewOrderAsync(Order order)
+    {
+        using (IDbConnection connection = GetConnection())
+        {
+
+            connection.Open();
+            var transaction = connection.BeginTransaction();
+
+            try
+            {
+                #region order
+                var orderParameters = new
+                {
+                    BuyerId = order.BuyerId,
+                    OrderDate = order.OrderDate,
+                    ShipToAddress_Street = order.ShipToAddress.Street,
+                    ShipToAddress_City = order.ShipToAddress.City,
+                    ShipToAddress_State = order.ShipToAddress.State,
+                    ShipToAddress_Country = order.ShipToAddress.Country,
+                    ShipToAddress_ZipCode = order.ShipToAddress.ZipCode
+                };
+
+                var dyanmicOrderParameters = new DynamicParameters(orderParameters);
+                dyanmicOrderParameters.Add("@InsertedId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+
+                await connection.ExecuteAsync(
+                      "AddNewOrder",
+                      dyanmicOrderParameters,
+                      commandType: CommandType.StoredProcedure,
+                      transaction: transaction
+                  );
+
+
+                var orderId = dyanmicOrderParameters.Get<int>("@InsertedId");
+                order.SetId(orderId);
+                #endregion
+
+                #region order items
+                foreach (var item in order.OrderItems)
+                {
+
+
+                    var orderItemParameters = new
+                    {
+                        ItemOrdered_CatalogItemId = item.ItemOrdered.CatalogItemId,
+                        ItemOrdered_ProductName = item.ItemOrdered.ProductName,
+                        ItemOrdered_PictureUri = item.ItemOrdered.PictureUri,
+                        UnitPrice = item.UnitPrice,
+                        Units = item.Units,
+                        OrderId = order.Id
+                    };
+                    var orderItemDynamicParameters = new DynamicParameters(orderItemParameters);
+                    orderItemDynamicParameters.Add("@InsertedId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                    await connection.ExecuteAsync(
+                      "AddNewOrderItem",
+                      orderItemDynamicParameters,
+                      commandType: CommandType.StoredProcedure,
+                      transaction: transaction
+                  );
+
+                    var orderItemId = orderItemDynamicParameters.Get<int>("@InsertedId");
+                    item.SetId(orderItemId);
+
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw ex;
+            }
+
+        }
+    }
+    #endregion
 }

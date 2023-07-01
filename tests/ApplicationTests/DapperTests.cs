@@ -233,6 +233,12 @@ public class DapperTests
     }
 
 
+    [Fact]
+    public void SeedIt()
+    {
+        var dm = new DataMaster();
+        dm.SeedDatabase();
+    }
 
     
 }
