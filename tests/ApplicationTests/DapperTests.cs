@@ -184,6 +184,8 @@ public class DapperTests
                     item.SetId(orderItemId);
 
                 }
+
+                transaction.Commit();
                 #endregion
             }catch(Exception ex)
             {
