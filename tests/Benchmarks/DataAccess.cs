@@ -26,9 +26,9 @@ public class DataAccess
     private readonly WebApplicationFactory<Program> _factory;
     private readonly IServiceProvider _serviceProvider;
     private readonly IMapper _mapper;
-    private readonly IRepository<Microsoft.eShopWeb.ApplicationCore.Entities.CatalogItem> _catalogItemRepository;
+   // private readonly IRepository<Microsoft.eShopWeb.ApplicationCore.Entities.CatalogItem> _catalogItemRepository;
     private readonly DataMaster _dataMaster;
-    private readonly CatalogContext _catalogContext;
+
     public DataAccess()
     {
         //_factory = new WebApplicationFactory<Program>();

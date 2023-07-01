@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.eShopWeb.ApplicationCore;
 
 namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints.Deprecated;
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 
@@ -18,6 +19,11 @@ public class Basket : BaseEntity, IAggregateRoot
         BuyerId = buyerId;
     }
 
+    public Basket(int id, string buyerId)
+    {
+        this.Id = id;
+        this.BuyerId = buyerId;
+    }
     public void AddItem(int catalogItemId, decimal unitPrice, int quantity = 1)
     {
         if (!Items.Any(i => i.CatalogItemId == catalogItemId))
@@ -34,8 +40,17 @@ public class Basket : BaseEntity, IAggregateRoot
         _items.RemoveAll(i => i.Quantity == 0);
     }
 
+    public void SetId(int id)
+    {
+        Id = id;
+    }
     public void SetNewBuyerId(string buyerId)
     {
         BuyerId = buyerId;
+    }
+
+    internal void AddItem(BasketItem item)
+    {
+        _items.Add(item);     
     }
 }

@@ -22,9 +22,9 @@ namespace Microsoft.eShopWeb.PublicApi.Controllers;
 [ApiController]
 public class CatalogItemListController : ControllerBase
 {
-    private readonly DataMaster _dataMaster;
+    private readonly IDataMaster _dataMaster;
     private readonly IUriComposer _uriComposer;
-    public CatalogItemListController(IUriComposer uriComposer, DataMaster dataMaster)
+    public CatalogItemListController(IUriComposer uriComposer, IDataMaster dataMaster)
     {
         _dataMaster = dataMaster;
         _uriComposer = uriComposer;
@@ -35,7 +35,7 @@ public class CatalogItemListController : ControllerBase
     {
         var request = new ListPagedCatalogItemRequest(pageSize, pageIndex, catalogBrandId, catalogTypeId);
         var response = new ListPagedCatalogItemResponse(request.CorrelationId());
-        var items = _dataMaster.GetCatalogItems(request.PageIndex, request.PageSize, request.CatalogTypeId, request.CatalogBrandId);
+        var items = await _dataMaster.GetCatalogItems(request.PageIndex, request.PageSize, request.CatalogTypeId, request.CatalogBrandId);
 
         int totalItems = items.Count;
 

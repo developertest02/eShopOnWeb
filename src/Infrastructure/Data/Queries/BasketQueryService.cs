@@ -1,17 +1,18 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.eShopWeb.ApplicationCore;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data.Queries;
 
 public class BasketQueryService : IBasketQueryService
 {
-    private readonly CatalogContext _dbContext;
 
-    public BasketQueryService(CatalogContext dbContext)
+    private readonly IDataMaster _dataMaster;
+    public BasketQueryService(IDataMaster dataMaster)
     {
-        _dbContext = dbContext;
+        _dataMaster = dataMaster;
     }
 
     /// <summary>
@@ -21,11 +22,12 @@ public class BasketQueryService : IBasketQueryService
     /// <returns></returns>
     public async Task<int> CountTotalBasketItems(string username)
     {
-        var totalItems = await _dbContext.Baskets
-            .Where(basket => basket.BuyerId == username)
-            .SelectMany(item => item.Items)
-            .SumAsync(sum => sum.Quantity);
-
-        return totalItems;
+        int result = 0;
+        var basket = await _dataMaster.FetchBasketForBuyer(username);
+        if(basket != null)
+        {
+            result = basket.Items.Sum(n => n.Quantity);
+        }
+        return result;
     }
 }

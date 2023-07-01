@@ -42,15 +42,15 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<AppIdentityDbContext>()
         .AddDefaultTokenProviders();
 
-builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-builder.Services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
+//builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+//builder.Services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
 builder.Services.Configure<CatalogSettings>(builder.Configuration);
 var catalogSettings = builder.Configuration.Get<CatalogSettings>() ?? new CatalogSettings();
 builder.Services.AddSingleton<IUriComposer>(new UriComposer(catalogSettings));
 builder.Services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 builder.Services.AddScoped<ITokenClaimsService, IdentityTokenClaimService>();
 //builder.Services.AddScoped<DataMaster>();
-builder.Services.AddTransient<DataMaster>();
+builder.Services.AddTransient<IDataMaster>((s)=>new DataMaster());
 builder.Services.AddScoped<IDbConnection>((p) => new SqlConnection(builder.Configuration.GetConnectionString("CatalogConnection")));
 
 
@@ -142,8 +142,8 @@ using (var scope = app.Services.CreateScope())
     var scopedProvider = scope.ServiceProvider;
     try
     {
-        var catalogContext = scopedProvider.GetRequiredService<CatalogContext>();
-        await CatalogContextSeed.SeedAsync(catalogContext, app.Logger);
+        //var catalogContext = scopedProvider.GetRequiredService<CatalogContext>();
+        //await CatalogContextSeed.SeedAsync(catalogContext, app.Logger);
 
         var userManager = scopedProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = scopedProvider.GetRequiredService<RoleManager<IdentityRole>>();

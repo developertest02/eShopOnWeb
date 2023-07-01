@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.eShopWeb.ApplicationCore;
 
-namespace Microsoft.eShopWeb.PublicApi.CatalogBrandEndpoints;
+namespace Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints.Deprecated;
 
 public class ListCatalogBrandsResponse : BaseResponse
 {

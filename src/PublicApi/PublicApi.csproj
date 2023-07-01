@@ -37,5 +37,10 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CatalogBrandEndpoints\" />
+    <Folder Include="CatalogTypeEndpoints\" />
+  </ItemGroup>
+
 
 </Project>

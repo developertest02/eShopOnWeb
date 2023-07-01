@@ -10,46 +10,49 @@ namespace Microsoft.eShopWeb.ApplicationCore.Services;
 
 public class BasketService : IBasketService
 {
-    private readonly IRepository<Basket> _basketRepository;
+   // private readonly IRepository<Basket> _basketRepository;
     private readonly IAppLogger<BasketService> _logger;
-
-    public BasketService(IRepository<Basket> basketRepository,
+    private readonly IDataMaster _dataMaster;
+    public BasketService(IDataMaster dataMaster,
         IAppLogger<BasketService> logger)
     {
-        _basketRepository = basketRepository;
+
+        _dataMaster = dataMaster;
         _logger = logger;
     }
 
     public async Task<Basket> AddItemToBasket(string username, int catalogItemId, decimal price, int quantity = 1)
     {
         var basketSpec = new BasketWithItemsSpecification(username);
-        var basket = await _basketRepository.FirstOrDefaultAsync(basketSpec);
 
+        //var basket = await _basketRepository.FirstOrDefaultAsync(basketSpec);
+        var basket = await _dataMaster.FetchBasketForBuyer(username);
+        
         if (basket == null)
         {
             basket = new Basket(username);
-            await _basketRepository.AddAsync(basket);
+            await _dataMaster.AddNewBasket(basket);
         }
 
         basket.AddItem(catalogItemId, price, quantity);
 
-        await _basketRepository.UpdateAsync(basket);
+        await _dataMaster.UpdateBasket(basket);
         return basket;
     }
 
     public async Task DeleteBasketAsync(int basketId)
     {
-        var basket = await _basketRepository.GetByIdAsync(basketId);
+        var basket = await _dataMaster.FetchBasketById(basketId);
         if (basket is null)
             throw new KeyNotFoundException($"No basket found for ID {basketId}.");
 
-        await _basketRepository.DeleteAsync(basket);
+        await _dataMaster.DeleteBasket(basket); 
     }
 
     public async Task<Result<Basket>> SetQuantities(int basketId, Dictionary<string, int> quantities)
     {
         var basketSpec = new BasketWithItemsSpecification(basketId);
-        var basket = await _basketRepository.FirstOrDefaultAsync(basketSpec);
+        var basket = await _dataMaster.FetchBasketById(basketId); 
         if (basket == null) return Result<Basket>.NotFound();
 
         foreach (var item in basket.Items)
@@ -61,27 +64,27 @@ public class BasketService : IBasketService
             }
         }
         basket.RemoveEmptyItems();
-        await _basketRepository.UpdateAsync(basket);
+        await _dataMaster.UpdateBasket(basket);
         return basket;
     }
 
     public async Task TransferBasketAsync(string anonymousId, string userName)
     {
-        var anonymousBasketSpec = new BasketWithItemsSpecification(anonymousId);
-        var anonymousBasket = await _basketRepository.FirstOrDefaultAsync(anonymousBasketSpec);
+        //var anonymousBasketSpec = new BasketWithItemsSpecification(anonymousId);
+        var anonymousBasket = await _dataMaster.FetchBasketForBuyer(anonymousId); //_basketRepository.FirstOrDefaultAsync(anonymousBasketSpec);
         if (anonymousBasket == null) return;
-        var userBasketSpec = new BasketWithItemsSpecification(userName);
-        var userBasket = await _basketRepository.FirstOrDefaultAsync(userBasketSpec);
+      //  var userBasketSpec = new BasketWithItemsSpecification(userName);
+        var userBasket = await _dataMaster.FetchBasketForBuyer(userName);
         if (userBasket == null)
         {
             userBasket = new Basket(userName);
-            await _basketRepository.AddAsync(userBasket);
+            await _dataMaster.AddNewBasket(userBasket);
         }
         foreach (var item in anonymousBasket.Items)
         {
             userBasket.AddItem(item.CatalogItemId, item.UnitPrice, item.Quantity);
         }
-        await _basketRepository.UpdateAsync(userBasket);
-        await _basketRepository.DeleteAsync(anonymousBasket);
+        await _dataMaster.UpdateBasket(userBasket);
+        await _dataMaster.DeleteBasket(anonymousBasket);
     }
 }

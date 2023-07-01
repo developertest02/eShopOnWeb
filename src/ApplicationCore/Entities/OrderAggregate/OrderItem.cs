@@ -15,4 +15,9 @@ public class OrderItem : BaseEntity
         UnitPrice = unitPrice;
         Units = units;
     }
+
+    public void SetId(int id)
+    {
+        this.Id = id;
+    }
 }

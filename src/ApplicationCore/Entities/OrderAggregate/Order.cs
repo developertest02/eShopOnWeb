@@ -47,4 +47,9 @@ public class Order : BaseEntity, IAggregateRoot
         }
         return total;
     }
+
+    public void SetId(int id)
+    {
+        Id = id;
+    }
 }

@@ -1,7 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.eShopWeb.ApplicationCore.Entities;
+using Microsoft.eShopWeb.ApplicationCore;
+
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.Web.Interfaces;
 using Microsoft.eShopWeb.Web.ViewModels;
@@ -12,15 +13,15 @@ public class IndexModel : PageModel
 {
     private readonly IBasketService _basketService;
     private readonly IBasketViewModelService _basketViewModelService;
-    private readonly IRepository<CatalogItem> _itemRepository;
-
+    private readonly IDataMaster _dataMaster;
     public IndexModel(IBasketService basketService,
         IBasketViewModelService basketViewModelService,
-        IRepository<CatalogItem> itemRepository)
+        IDataMaster dataMaster)
     {
         _basketService = basketService;
         _basketViewModelService = basketViewModelService;
-        _itemRepository = itemRepository;
+        _dataMaster = dataMaster;
+
     }
 
     public BasketViewModel BasketModel { get; set; } = new BasketViewModel();
@@ -36,8 +37,8 @@ public class IndexModel : PageModel
         {
             return RedirectToPage("/Index");
         }
-
-        var item = await _itemRepository.GetByIdAsync(productDetails.Id);
+        
+        var item = await _dataMaster.GetCatalogItemById(productDetails.Id);
         if (item == null)
         {
             return RedirectToPage("/Index");
@@ -69,7 +70,8 @@ public class IndexModel : PageModel
     {
         if (Request.HttpContext.User.Identity == null)
         {
-            return null!;
+            throw new System.ArgumentNullException(nameof(Request.HttpContext.User.Identity));
+            
         }
 
         string? userName = null;
@@ -78,7 +80,7 @@ public class IndexModel : PageModel
         {
             if(Request.HttpContext.User.Identity.Name == null)
             {
-                return null!;
+                throw new System.ArgumentNullException(nameof(Request.HttpContext.User.Identity.Name));
             }
      
             return Request.HttpContext.User.Identity.Name!;

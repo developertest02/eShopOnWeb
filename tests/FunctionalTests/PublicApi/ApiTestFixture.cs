@@ -21,14 +21,14 @@ public class TestApiApplication : WebApplicationFactory<AuthenticateController>
         // Add mock/test services to the builder here
         builder.ConfigureServices(services =>
         {
-            services.AddScoped(sp =>
-            {
-                // Replace SQLite with in-memory database for tests
-                return new DbContextOptionsBuilder<CatalogContext>()
-                .UseInMemoryDatabase("DbForPublicApi")
-                .UseApplicationServiceProvider(sp)
-                .Options;
-            });
+            //services.AddScoped(sp =>
+            //{
+            //    // Replace SQLite with in-memory database for tests
+            //    return new DbContextOptionsBuilder<CatalogContext>()
+            //    .UseInMemoryDatabase("DbForPublicApi")
+            //    .UseApplicationServiceProvider(sp)
+            //    .Options;
+            //});
             services.AddScoped(sp =>
             {
                 // Replace SQLite with in-memory database for tests

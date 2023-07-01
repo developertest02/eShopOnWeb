@@ -18,8 +18,8 @@ public static class Dependencies
 
         if (useOnlyInMemoryDatabase)
         {
-            services.AddDbContext<CatalogContext>(c =>
-               c.UseInMemoryDatabase("Catalog"));
+            //services.AddDbContext<CatalogContext>(c =>
+            //   c.UseInMemoryDatabase("Catalog"));
          
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseInMemoryDatabase("Identity"));
@@ -29,8 +29,8 @@ public static class Dependencies
             // use real database
             // Requires LocalDB which can be installed with SQL Server Express 2016
             // https://www.microsoft.com/en-us/download/details.aspx?id=54284
-            services.AddDbContext<CatalogContext>(c =>
-                c.UseSqlServer(configuration.GetConnectionString("CatalogConnection")));
+            //services.AddDbContext<CatalogContext>(c =>
+            //    c.UseSqlServer(configuration.GetConnectionString("CatalogConnection")));
 
             // Add Identity DbContext
             services.AddDbContext<AppIdentityDbContext>(options =>
