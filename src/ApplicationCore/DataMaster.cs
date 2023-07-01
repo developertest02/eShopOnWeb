@@ -357,6 +357,8 @@ public class DataMaster : IDataMaster
 
                 }
                 #endregion
+
+                transaction.Commit();
             }
             catch (Exception ex)
             {

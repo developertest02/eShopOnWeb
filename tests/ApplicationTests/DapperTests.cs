@@ -24,76 +24,7 @@ public class DapperTests
     private const string CONNECTION_STRING = "Server=(localdb)\\mssqllocaldb;Integrated Security=true;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;";
 
 
-    public async Task<int> CreateOrder(string buyerId, DateTimeOffset orderDate, string shipToAddressStreet,
-        string shipToAddressCity, string shipToAddressState, string shipToAddressCountry, string shipToAddressZipCode)
-    {
-        using (IDbConnection connection = new SqlConnection(CONNECTION_STRING))
-        {
-            connection.Open();
-
-            var parameters = new
-            {
-                BuyerId = buyerId,
-                OrderDate = orderDate,
-                ShipToAddress_Street = shipToAddressStreet,
-                ShipToAddress_City = shipToAddressCity,
-                ShipToAddress_State = shipToAddressState,
-                ShipToAddress_Country = shipToAddressCountry,
-                ShipToAddress_ZipCode = shipToAddressZipCode
-            };
-
-            var dynamicParameters = new DynamicParameters(parameters);
-            dynamicParameters.Add("@InsertedId", dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-
-            await connection.ExecuteAsync(
-                  "AddNewOrder",
-                  dynamicParameters,
-                  commandType: CommandType.StoredProcedure
-              );
-
-            var result = dynamicParameters.Get<int>("@InsertedId");
-            return result;
-
-        }
-    }
-
-    public async Task<int> AddNewOrderItem(
-        int itemOrderedCatalogItemId,
-        string itemOrderedProductName,
-        string itemOrderedPictureUri,
-        decimal unitPrice,
-        int units,
-        int orderId)
-    {
-        using (IDbConnection connection = new SqlConnection(CONNECTION_STRING))
-        {
-            var parameters = new
-            {
-                ItemOrdered_CatalogItemId = itemOrderedCatalogItemId,
-                ItemOrdered_ProductName = itemOrderedProductName,
-                ItemOrdered_PictureUri = itemOrderedPictureUri,
-                UnitPrice = unitPrice,
-                Units = units,
-                OrderId = orderId
-            };
-            var dynamicParameters = new DynamicParameters(parameters);
-            dynamicParameters.Add("@InsertedId", dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-            connection.Open();
-
-            // Execute the stored procedure and retrieve the OUTPUT parameter value
-            connection.Execute(
-                "AddNewOrderItem",
-                dynamicParameters,
-                commandType: CommandType.StoredProcedure);
-
-            var result = dynamicParameters.Get<int>("@InsertedId");
-            return result;
-        }
-    }
-
-    public Order CreateTestOrder()
+    Order CreateTestOrder()
     {
         var buyerId = "demouser@microsoft.com";
         var orderDate = DateTime.UtcNow;
@@ -195,42 +126,13 @@ public class DapperTests
 
         }
     }
-    public static List<BasketItem> GenerateTestBasketItems()
-    {
-        var testBasketItems = new List<BasketItem>();
-
-        // Generate five test BasketItems
-        for (int i = 1; i <= 5; i++)
-        {
-            var item = new BasketItem(i, 10.99m * i, i, i, 1);
-            testBasketItems.Add(item);
-        }
-
-        return testBasketItems;
-    }
-
-    public static Basket CreateTestBasket()
-    {
-        // Create a new basket with a buyer ID
-        var basket = new Basket("buyer123");
-
-        // Generate test BasketItems
-        var testBasketItems = GenerateTestBasketItems();
-
-        // Add the test BasketItems to the basket
-        foreach (var item in testBasketItems)
-        {
-            basket.AddItem(item.CatalogItemId, item.UnitPrice);
-        }
-
-        return basket;
-    }
     
     [Fact]
     public async Task CreateNewOrderTest()
     {
         var order = CreateTestOrder();
-        await SaveNewOrderAsync(order);
+        var sut = new DataMaster();
+        await sut.SaveNewOrderAsync(order);
         order.Id.Should().BeGreaterThan(0);
     }
 
