@@ -25,13 +25,13 @@ public class DataMaster : IDataMaster
     
     public async void SeedDatabase()
     {
-        var connection = GetConnection();
-        connection.Execute(
-        "ResetDatabase",   
-           commandType: CommandType.StoredProcedure);
-        var dm = new DataMaster();
-        var catalogItems = GetPreconfiguredItems().ToList();
-        catalogItems.ForEach(c => dm.AddNewCatalogItem(c));
+        //var connection = GetConnection();
+        //connection.Execute(
+        //"ResetDatabase",   
+        //   commandType: CommandType.StoredProcedure);
+        //var dm = new DataMaster();
+        //var catalogItems = GetPreconfiguredItems().ToList();
+        //catalogItems.ForEach(c => dm.AddNewCatalogItem(c));
     }
 
     #region catalog
@@ -94,8 +94,8 @@ public class DataMaster : IDataMaster
           null,
           CommandType.StoredProcedure);
         var id = dynamicParameters.Get<int>("@InsertedId");
-
-        source.SetId(source.Id);
+        
+        source.SetId(id);
 
     }
     public async Task DeleteBasket(Basket basket)
@@ -368,5 +368,65 @@ public class DataMaster : IDataMaster
 
         }
     }
+
+    public async Task<List<Order>> FetchOrdersAsync(int? orderId = null, string? buyerId = null)
+    {
+        List<Order> result = new List<Order>();
+        List<OrderWithItemsDto> queryItems;
+        var sql = "SELECT * FROM OrdersWithItemsView";
+        if (orderId.HasValue)
+            sql = $"{sql} WHERE OrderId = {orderId.GetValueOrDefault()}";
+        else if(!string.IsNullOrEmpty(buyerId))
+            sql = $"{sql} WHERE BuyerId = '{buyerId}'";
+        using (var connection = GetConnection())
+        {
+            var queryResult = await connection.QueryAsync<OrderWithItemsDto>(sql);
+            queryItems = queryResult.ToList();
+        }
+
+        
+        var itemsGroupedByOrders = queryItems.GroupBy(n => n.OrderId);
+        foreach(var orderWithItems in itemsGroupedByOrders)
+        {
+            var order = orderWithItems.First();
+            
+            var address = new Address(order.ShipToAddress_Street, order.ShipToAddress_City, order.ShipToAddress_State, order.ShipToAddress_Country, order.ShipToAddress_ZipCode);
+            var orderItems = new List<OrderItem>();
+            foreach(var item in orderItems)
+            {
+                var catalogItemOrdered = new CatalogItemOrdered(item.ItemOrdered.CatalogItemId, item.ItemOrdered.ProductName, item.ItemOrdered.PictureUri);
+                var orderItemModel = new OrderItem(catalogItemOrdered, item.UnitPrice, item.Units);
+                orderItems.Add(orderItemModel);
+            }
+
+            var orderModel = new Order(order.BuyerId, address, orderItems);
+            orderModel.SetId(order.OrderId);
+            result.Add(orderModel);
+
+        }
+
+        return result;
+            
+    }
+
+    #region dtos
+    private class OrderWithItemsDto
+    {
+        public int OrderId { get; set; }
+        public string BuyerId { get; set; }
+        public DateTimeOffset OrderDate { get; set; }
+        public string ShipToAddress_Street { get; set; }
+        public string ShipToAddress_City { get; set; }
+        public string ShipToAddress_State { get; set; }
+        public string ShipToAddress_Country { get; set; }
+        public string ShipToAddress_ZipCode { get; set; }
+        public int OrderItemId { get; set; }
+        public int? ItemOrdered_CatalogItemId { get; set; }
+        public string ItemOrdered_ProductName { get; set; }
+        public string ItemOrdered_PictureUri { get; set; }
+        public decimal UnitPrice { get; set; }
+        public int Units { get; set; }
+    }
+    #endregion
     #endregion
 }

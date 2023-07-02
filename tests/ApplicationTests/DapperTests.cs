@@ -136,6 +136,13 @@ public class DapperTests
         order.Id.Should().BeGreaterThan(0);
     }
 
+    [Fact]
+    public async Task FetchOrdersAsync()
+    {
+        var dm = new DataMaster();
+        var result = await dm.FetchOrdersAsync(null, "demouser@microsoft.com");
+        result.Count().Should().BeGreaterThan(0);
+    }
 
     [Fact]
     public void SeedIt()
@@ -144,6 +151,7 @@ public class DapperTests
         dm.SeedDatabase();
     }
 
-    
+
+
 }
 

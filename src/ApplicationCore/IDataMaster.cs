@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Entities.BasketAggregate;
+using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 
 namespace Microsoft.eShopWeb.ApplicationCore;
 public interface IDataMaster
@@ -21,4 +22,5 @@ public interface IDataMaster
     void SeedDatabase();
     Task UpdateBasket(Basket basket);
     void UpdateCatalogItem(CatalogItem source);
+    Task<List<Order>> FetchOrdersAsync(int? orderId = null, string? buyerId = null);
 }
