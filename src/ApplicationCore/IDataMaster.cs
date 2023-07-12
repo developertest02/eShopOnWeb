@@ -23,4 +23,5 @@ public interface IDataMaster
     Task UpdateBasket(Basket basket);
     void UpdateCatalogItem(CatalogItem source);
     Task<List<Order>> FetchOrdersAsync(int? orderId = null, string? buyerId = null);
+    Task SaveNewOrderAsync(Order order);
 }
