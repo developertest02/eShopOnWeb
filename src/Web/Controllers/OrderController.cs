@@ -44,8 +44,9 @@ public class OrderController : Controller
             var vm = new OrderViewModel();
             
             vm.OrderNumber = order.Id;
-            vm.OrderDate = order.OrderDate;
+            vm.OrderDate = order.OrderDate.ToOffset(TimeSpan.FromMinutes(0));
             vm.ShippingAddress = order.ShipToAddress;
+            vm.Total = order.Total();
             viewModels.Add(vm);
           
         }

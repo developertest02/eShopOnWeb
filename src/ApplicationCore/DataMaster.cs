@@ -392,9 +392,9 @@ public class DataMaster : IDataMaster
             
             var address = new Address(order.ShipToAddress_Street, order.ShipToAddress_City, order.ShipToAddress_State, order.ShipToAddress_Country, order.ShipToAddress_ZipCode);
             var orderItems = new List<OrderItem>();
-            foreach(var item in orderItems)
+            foreach(var item in orderWithItems)
             {
-                var catalogItemOrdered = new CatalogItemOrdered(item.ItemOrdered.CatalogItemId, item.ItemOrdered.ProductName, item.ItemOrdered.PictureUri);
+                var catalogItemOrdered = new CatalogItemOrdered(item.ItemOrdered_CatalogItemId.GetValueOrDefault(), item.ItemOrdered_ProductName, item.ItemOrdered_PictureUri);
                 var orderItemModel = new OrderItem(catalogItemOrdered, item.UnitPrice, item.Units);
                 orderItems.Add(orderItemModel);
             }

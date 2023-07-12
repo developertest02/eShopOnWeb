@@ -24,4 +24,5 @@ public interface IDataMaster
     void UpdateCatalogItem(CatalogItem source);
     Task<List<Order>> FetchOrdersAsync(int? orderId = null, string? buyerId = null);
     Task SaveNewOrderAsync(Order order);
+
 }
